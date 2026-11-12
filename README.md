@@ -10,8 +10,7 @@ They are for catalogue admins, not developers. They need no code checkout.
 | Skill | Use it to |
 |---|---|
 | `diskograf-catalogue` | Learn the catalogue, the MCP tools and the write rules. Read first. |
-| `diskograf-new-releases` | Find new Malaysian releases and add them as drafts. |
-| `diskograf-release-scan` | Scan YouTube, Spotify and Apple Music for new releases, then add them. |
+| `diskograf-release-scan` | Find new Malaysian releases on YouTube, Spotify and Apple Music, then add them. |
 | `diskograf-discography` | Complete or audit one artist's songs and albums. |
 | `diskograf-song-credits` | Fill or fix song credits and lyrics. |
 | `diskograf-better-video` | Swap a song's video for the official music video. |

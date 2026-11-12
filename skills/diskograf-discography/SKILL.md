@@ -12,7 +12,7 @@ Give an ETA first. A large discography takes 1 to 3 hours per artist. Keep a sho
 
 Related skills:
 
-- `diskograf-new-releases`: draft one song with credits.
+- `diskograf-release-scan`: draft one song with credits (step 8).
 - `diskograf-song-credits`: Spotify credits through Yab.
 - `diskograf-better-video`: official video swaps.
 - `diskograf-artist-avatars`: artist images.
