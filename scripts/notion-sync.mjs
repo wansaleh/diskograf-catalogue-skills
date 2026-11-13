@@ -77,6 +77,7 @@ function toBlocks(md) {
   const blocks = [];
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   let para = [];
+  const stack = []; // open list items, by indent
   const flush = () => {
     if (para.length) blocks.push(block('paragraph', para.join(' ')));
     para = [];
@@ -92,11 +93,22 @@ function toBlocks(md) {
       continue;
     }
     let m;
+    if (line.trim() && !/^\s*(?:[-*]|\d+[.)])\s/.test(line) && !/^\s/.test(line)) stack.length = 0;
     if (!line.trim()) flush();
     else if ((m = line.match(/^(#{1,3})\s+(.*)/))) { flush(); blocks.push(block(`heading_${m[1].length}`, m[2])); }
     else if ((m = line.match(/^#{4,}\s+(.*)/))) { flush(); blocks.push(block('heading_3', m[1])); }
-    else if ((m = line.match(/^\s*[-*]\s+(.*)/))) { flush(); blocks.push(block('bulleted_list_item', m[1])); }
-    else if ((m = line.match(/^\s*\d+[.)]\s+(.*)/))) { flush(); blocks.push(block('numbered_list_item', m[1])); }
+    else if ((m = line.match(/^(\s*)(?:([-*])|\d+[.)])\s+(.*)/))) {
+      // Indented items nest under the previous list item, so numbering continues after a sub-list.
+      flush();
+      const b = block(m[2] ? 'bulleted_list_item' : 'numbered_list_item', m[3]);
+      const indent = m[1].length;
+      while (stack.length && stack.at(-1).indent >= indent) stack.pop();
+      const parent = stack.at(-1)?.block;
+      if (parent && stack.length < 3) (parent[parent.type].children ??= []).push(b);
+      else blocks.push(b);
+      stack.push({ indent, block: b });
+      continue;
+    }
     else if ((m = line.match(/^>\s?(.*)/))) { flush(); blocks.push(block('quote', m[1])); }
     else if (/^\s*(---|\*\*\*)\s*$/.test(line)) { flush(); blocks.push({ object: 'block', type: 'divider', divider: {} }); }
     else para.push(line.trim());
