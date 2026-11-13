@@ -3,6 +3,7 @@
 // Usage: NOTION_TOKEN=... NOTION_PARENT_PAGE_ID=... node scripts/notion-sync.mjs [--dry-run]
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const TOKEN = process.env.NOTION_TOKEN;
 const PARENT = process.env.NOTION_PARENT_PAGE_ID;
@@ -186,8 +187,18 @@ async function main() {
 
   for (const n of names) {
     const blocks = skillBlocks(n, parseSkill(join(root, n)));
+    // The hash covers the body only, so a new commit SHA alone does not force a rewrite.
+    const hash = createHash('sha256').update(JSON.stringify(blocks.slice(1))).digest('hex').slice(0, 12);
+    blocks[0].callout.rich_text.push(...plain(` Content hash ${hash}.`));
     let id = existing.get(n);
     if (id) {
+      const first = (await notion('GET', `/blocks/${id}/children?page_size=1`)).results[0];
+      const header = first?.callout?.rich_text.map((t) => t.plain_text).join('') ?? '';
+      if (header.includes(`Content hash ${hash}.`)) {
+        console.log(`skip ${n}`);
+        existing.delete(n);
+        continue;
+      }
       for (const b of await listChildren(id)) await notion('DELETE', `/blocks/${b.id}`);
       console.log(`update ${n}`);
     } else {
