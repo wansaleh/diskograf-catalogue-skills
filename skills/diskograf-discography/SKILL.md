@@ -172,6 +172,15 @@ Use this only when the user asks to delegate or orchestrate.
 5. Merges, trashes and deletes stay with the main agent, and only on the user's request.
 6. Search tools rate limit on the free tier. Retry later, or use another source.
 
+### Next N top singers
+
+For "next N top singers" or "do N more artists":
+
+1. Read the Notion log page first. List every artist already logged.
+2. Rank candidates with `artist_role_counts` or `catalogue_stats` by song count, singers only.
+3. Drop artists already on the log, unless their entry lists open gaps the user asked to close.
+4. Show the N picks with ids and the reason before writing. Then run section 7 per artist, or section 8 when delegation is asked.
+
 ## 9. Release date audit
 
 1. Sort the artist's songs by suspicion. Tier 1: wrong by years, or dated at the YouTube upload. Tier 2: day or month unverified.
@@ -203,7 +212,7 @@ Use this only when the user asks to delegate or orchestrate.
 
 ## Report
 
-Give the songs added, albums added, dates fixed and remaining gaps, with ids. Show times in MYT. Put **Blocked on me** first.
+Give the songs added, albums added, dates fixed and remaining gaps, with ids. The last line must confirm the Notion log section was written and read back. Without that line the run is not complete. Show times in MYT. Put **Blocked on me** first.
 
 ## Internal notes
 

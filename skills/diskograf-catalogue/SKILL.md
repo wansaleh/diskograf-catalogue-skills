@@ -354,6 +354,11 @@ Pick the first tool that fits the task.
 - An album holds at most 50 songs.
 - Publishing needs at least one published member song.
 - Only published, non-deleted songs can join an album.
+- A failed album write rolls back entirely.
+- Before a bulk tracklist or link change, save the before-state under `/tmp`.
+- Apply only tracklists you checked against the provider page or MusicBrainz: track count, order and titles. Leave unverified or conflicting editions alone.
+- Read back each write. Keep album membership and release metadata unchanged unless that is the task.
+- If a write receipt shows `mirror_edge: 'failed'` while `api_edge_cache` and `web_pages` are ok, purge the Cloudflare cache for `diskograf.com` once. Never repeat a write to retry the cache.
 
 ### Curated lists
 
@@ -387,6 +392,8 @@ Pick the first tool that fits the task.
 - A merge or `delete_empty_artists` cannot be undone.
 
 ## 9. Safety rules
+
+- Links to catalogue pages use `<id>-<slug>`, for example `https://diskograf.com/song/12345-tajuk-lagu`. Genres use the slug only. Users use `/@<username>`. Never build a link from the name alone. Take the id and slug from the tool output, or follow `docs/permalinks.md` in diskograf-next.
 
 - Search before you create. Duplicates are the most common error.
 - Never publish, trash, merge, or delete without the user's request.

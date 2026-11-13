@@ -48,6 +48,17 @@ Better to worse:
 - The old video is gone from the song. If the old video was a real live or cover performance, add it as its own song.
 - `refresh_youtube` costs 1 YouTube quota unit. Use it only when the stored snapshot is wrong.
 
+## Lost songs re-audit
+
+A song flagged lost (`set_song_lost`) has no public video. Recheck lost songs from time to time:
+
+1. List lost songs with `search_songs` and the lost quality filter.
+2. For each, search YouTube for an official upload, a label channel upload, or a public cover. A cover goes on as its own song, not as the lost song's video.
+3. If an official video now exists, set it with `update_song` and clear the lost flag.
+4. A lost song must not keep Spotify or Apple Music links that point to a different recording. Check each link's title, artist and duration. Remove wrong links with `clear`; keep correct ones.
+5. Keep songs held for a public cover as "lost candidates" until a cover exists. Do not mark them lost early.
+6. Report per song: id, old state, new state, sources.
+
 ## Report
 
 List each song id and title with the old video id, the old class, the new video id and the new class. Also list skipped songs and the reason.
