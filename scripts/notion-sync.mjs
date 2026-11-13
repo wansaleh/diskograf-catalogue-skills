@@ -40,14 +40,36 @@ async function notion(method, path, body) {
   throw new Error(`${method} ${path} -> rate limited`);
 }
 
-// ---- Markdown to Notion blocks (plain text inside blocks; no inline formatting) ----
+// ---- Markdown to Notion blocks (inline code, bold, italic, links) ----
 
+const chunk = (content, annotations, link) => {
+  const parts = [];
+  for (let i = 0; i < content.length; i += MAX_TEXT) {
+    const t = { content: content.slice(i, i + MAX_TEXT) };
+    if (link) t.link = { url: link };
+    const p = { type: 'text', text: t };
+    if (annotations) p.annotations = annotations;
+    parts.push(p);
+  }
+  return parts;
+};
+const INLINE = /`([^`]+)`|\*\*(.+?)\*\*|(?<![\w*])\*(?!\s)([^*]+?)\*(?!\w)|\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
 const text = (s) => {
   const parts = [];
-  for (let i = 0; i < s.length; i += MAX_TEXT) parts.push({ type: 'text', text: { content: s.slice(i, i + MAX_TEXT) } });
+  let last = 0;
+  for (const m of s.matchAll(INLINE)) {
+    if (m.index > last) parts.push(...chunk(s.slice(last, m.index)));
+    if (m[1] !== undefined) parts.push(...chunk(m[1], { code: true }));
+    else if (m[2] !== undefined) parts.push(...chunk(m[2], { bold: true }));
+    else if (m[3] !== undefined) parts.push(...chunk(m[3], { italic: true }));
+    else parts.push(...chunk(m[4], null, m[5]));
+    last = m.index + m[0].length;
+  }
+  if (last < s.length) parts.push(...chunk(s.slice(last)));
   return parts.length ? parts : [{ type: 'text', text: { content: '' } }];
 };
-const block = (type, s, extra = {}) => ({ object: 'block', type, [type]: { rich_text: text(s), ...extra } });
+const plain = (s) => chunk(s);
+const block = (type, s, extra = {}) => ({ object: 'block', type, [type]: { rich_text: type === 'code' ? plain(s) : text(s), ...extra } });
 
 function toBlocks(md) {
   const blocks = [];
@@ -113,6 +135,7 @@ function skillBlocks(name, { meta, body, refs }) {
   const header = [
     { object: 'block', type: 'callout', callout: {
       rich_text: text(`Generated from diskograf-catalogue-skills/skills/${name} at commit ${SHA}. Do not edit here. Edit the repo.`),
+      icon: { type: 'emoji', emoji: '📄' },
       color: 'gray_background',
     } },
   ];
