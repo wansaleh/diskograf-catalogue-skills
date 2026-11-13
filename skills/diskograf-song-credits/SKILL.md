@@ -37,7 +37,7 @@ return 'timeout';
 ```
 
    3. For more songs, `navigate` the same tab and run the script again.
-   4. `close` the tab when done. Do not leave it open.
+   4. `close` the tab when you finish the track. Do not leave it open.
    5. If it returns `timeout` twice, take one `snapshot`. Then report the problem to the user. Do not retry in a loop.
 2. **YouTube description.** It is in `youtube_data.description`. An official MV description often lists composer, lyricist, producer, MV director and label. A "Provided to YouTube by" description lists `Musician:` names without instruments.
 3. **Apple Music.** Checked 2026-11-06 in Yab, signed out: the web song page shows no credits. Do not rely on it. Use it for dates and track order.
