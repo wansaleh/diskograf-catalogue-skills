@@ -53,6 +53,7 @@ const chunk = (content, annotations, link) => {
   }
   return parts;
 };
+const plain = (s) => chunk(s);
 const INLINE = /`([^`]+)`|\*\*(.+?)\*\*|(?<![\w*])\*(?!\s)([^*]+?)\*(?!\w)|\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
 const text = (s) => {
   const parts = [];
@@ -66,9 +67,9 @@ const text = (s) => {
     last = m.index + m[0].length;
   }
   if (last < s.length) parts.push(...chunk(s.slice(last)));
+  if (parts.length > 100) return plain(s); // Notion caps rich_text at 100 items
   return parts.length ? parts : [{ type: 'text', text: { content: '' } }];
 };
-const plain = (s) => chunk(s);
 const block = (type, s, extra = {}) => ({ object: 'block', type, [type]: { rich_text: type === 'code' ? plain(s) : text(s), ...extra } });
 
 function toBlocks(md) {
