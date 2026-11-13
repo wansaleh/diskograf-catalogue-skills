@@ -1,0 +1,25 @@
+name: Sync skills to Notion
+
+on:
+  push:
+    branches: [master]
+    paths: ['skills/**', 'scripts/notion-sync.mjs']
+  workflow_dispatch:
+
+concurrency:
+  group: notion-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/notion-sync.mjs
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_PARENT_PAGE_ID: 417713c9e1f2816eac3bf8ec11d97fec
+          COMMIT_SHA: ${{ github.sha }}
