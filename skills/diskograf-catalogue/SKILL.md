@@ -8,7 +8,7 @@ description: Core Diskograf catalogue guide - entities, credit roles, access lev
 Read this before any catalogue task on diskograf.com.
 It covers what the site is, how to browse it, and how to edit the catalogue.
 
-Last verified: 2026-11-10.
+Last verified: 2026-11-15.
 
 ## Keep this file current
 
@@ -27,7 +27,7 @@ Last verified: 2026-11-10.
 
 | Entity | Key facts |
 |---|---|
-| Song | Needs an 11-character YouTube video ID. Has credits, genres, labels, lyrics, notes, provider links, and version links. Draft until published. |
+| Song | Needs at least one of a YouTube video ID, a Spotify link, or an Apple Music link. A song without a video also needs a release date. Has credits, genres, labels, lyrics, notes, provider links, and version links. Draft until published. |
 | Artist | A person or group (`is_group`). Has aliases, profile dates, socials, avatar. Has a trash. Only `delete_empty_artists` and `empty_trash` delete permanently. |
 | Album | Title, type, release date, ordered songs (max 50), artists, labels, artwork. Draft or published. |
 | Label | Record label. Name, short name, former name (FKA), company, active or defunct, logo. |
@@ -217,7 +217,7 @@ Pick the first tool that fits the task.
 
 | Key | Meaning |
 |---|---|
-| `youtube` | Current YouTube video ID. Required. |
+| `youtube` | Current YouTube video ID. Optional when the song has a Spotify or Apple Music link. |
 | `spotify` | Spotify track. Stored as `spotify:track:<id>` or an `open.spotify.com/track/<id>` URL. |
 | `applemusic` | Apple Music song URL, `music.apple.com/my/album/...?i=<trackId>`. |
 | `artwork`, `artworkMedium`, `artworkThumb` | Artwork URLs at three sizes, usually Spotify or Apple. |

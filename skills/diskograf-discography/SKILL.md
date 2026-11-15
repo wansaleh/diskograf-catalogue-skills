@@ -25,6 +25,25 @@ Related skills:
 - **Dead video audit**: section 10.
 - **Follow-up on a logged artist**: read the artist's row in the log, then do only its listed gaps.
 
+### Confident match
+
+A match is confident only when all of these are true:
+
+- the title matches, ignoring case and punctuation;
+- the duration matches within 5 seconds, when both sides show one;
+- the source is official: the artist's own Spotify or Apple Music page, the artist's YouTube channel, a Topic channel, or a label channel.
+
+A fan upload alone is not a confident match. A compilation with no confirmed date is not a confident match. When the match is not confident, skip the item. Do not add a guessed link, date or credit.
+
+### Autonomy
+
+Work to a finished catalogue without asking. A full completion order is a standing order to add, edit and publish every confident item.
+
+- Do not ask before routine choices. Pick the source order in this skill and state what you picked.
+- Ask only when you really do not know: two plausible artists share a name, two recordings fit equally, a credit may belong to another person, or the only way forward is a merge, trash or delete.
+- Skip an unclear item, write it in the Notion log with the reason, and continue. Do not stop the run for it.
+- When a skip hides a real decision for the user, put it under **Blocked on me** in the report.
+
 ## 1. Read what exists
 
 1. `search_artists`, then `get_artist`. Note the artist id, aliases, `is_group` and store links. Several artists share a name. Confirm the identity.
@@ -38,7 +57,7 @@ Collect the release list in this order:
 
 1. **Spotify artist discography**, through Yab: `open.spotify.com/artist/<id>/discography/all`. Read albums, EPs and singles with release dates and track lists. Read `og:image` from the HTML with `curl`, not from the Yab tab.
 2. **Apple Music artist page**: albums and singles with dates.
-3. **YouTube**: `youtube_artist_songs` lists the channel songs. It costs no quota. Old songs often exist only as fan uploads.
+3. **YouTube**: `youtube_artist_songs` lists the channel songs. It costs no quota. Old songs often exist only as fan uploads. Use a fan upload to find the song, then confirm the recording with a store link or another official source.
 4. **Wikipedia, Wikidata, MusicBrainz and Discogs**: older albums, dates and tracklists. `compare_album_tracklist` checks these sources for one album.
 5. Pre-2000 albums with no store release: use a collector scan, a newspaper advertisement or a label compilation tracklist (for example EMI Getaran Nostalgia). Write the source in the log.
 
@@ -60,7 +79,7 @@ Verify every claim before you write it. A research report from another model can
 - Send read-only research to a lower-cost model, for example DeepSeek flash, or a Sonnet 5.5 explorer. Do not use Haiku.
 - One agent per artist, or per era for a large artist. Give it the artist id and the catalogue gaps from section 1.
 - Tell it: read-only, no database writes, no repo edits, write the report to `/tmp/discog/<artist>-research.md`.
-- Ask for a table: title, release, date, store links, credits, source URL. Ask it to mark each row verified or unverified.
+- Ask for a table: title, release, date, store links, credits, cover URL, source URL. Ask it to mark each row verified or unverified.
 - Treat the report as leads. The writer agent or the main agent re-checks every date, link and credit in a browser before any write.
 - Keep the final writes and all judgment calls with the stronger model.
 
@@ -74,7 +93,7 @@ Make one table with:
 - albums with a wrong order or missing tracks;
 - songs with the wrong recording (see section 4, step 7).
 
-Match by title and duration, not by title only. Check `similar_songs` and versions: live, remix, acoustic and remake are separate songs. Show the table to the user before large writes, unless the user ordered unsupervised work.
+Match by title and duration, not by title only. Check `similar_songs` and versions: live, remix, acoustic and remake are separate songs. Do not wait for approval on confident rows. Put the table in the report, with each skipped row and its reason.
 
 ## 4. Add songs
 
@@ -83,23 +102,28 @@ Album and EP imports: read `references/release-import-notes.md` first.
 For each missing song:
 
 1. `prepare_song` with the YouTube, Spotify or Apple link. It returns `youtube_description` for credits. A Spotify or Apple link costs no YouTube quota. Avoid `refresh_youtube`.
-2. Every song needs a YouTube video id. Prefer the official video, then the Topic upload, then the best fan upload. A video id that is already used is refused (`youtube_id_taken`). Find the song that owns it.
+2. Each song needs at least one of: a YouTube video id, a Spotify link, an Apple Music link. Prefer the official video, then the Topic upload, then a fan upload of the same recording. When no YouTube video exists, a store link is enough, but `released_at` becomes required. A video id that is already used is refused (`youtube_id_taken`). Find the song that owns it.
 3. Release date: use the Spotify or Apple Music single or album date. Do not use the YouTube upload date. Use year precision when only the year is known. Do not use a compilation placeholder such as 1989-01-01 as a real date.
 4. Credits: lead performer role 15, composer 2, lyricist 3, producer 1, arranger 17. Use `list_roles`. The description first, then Spotify credits through Yab, as in `diskograf-song-credits`. Add composer and lyricist to every new song when a source confirms them.
 5. A name that matches two artists returns `ambiguous_artist`. Pass `artist_id`. Two people with the same name are not the same person. Check before you reuse an id.
 6. Before you create a new artist for a credit, `search_artists` for spelling variants. A past run created a duplicate "Mohamad Nasir". It could not be deleted for 48 hours.
 7. Check the recording. A fan or compilation upload can be a different version. Compare the duration with Apple Music and the ℗ year in the description. If it differs, swap the video.
-8. Set artwork from the release cover: Spotify (`i.scdn.co`) or Apple (`mzstatic.com`). YouTube thumbnail only as a fallback. See "Artwork" below.
+8. Artwork is required on every song. Set it from the release cover: Spotify (`i.scdn.co`) or Apple (`mzstatic.com`). Use the YouTube thumbnail only when no store cover exists. See "Artwork" below.
 9. `labels` takes objects: `{ "label_id": 1 }` or `{ "name": "X" }`, exactly one key each. Never bare ids or strings.
-10. `create_song` dry run, check `similar_songs`, then confirm. Songs stay drafts.
+10. `create_song` dry run, check `similar_songs`, then confirm. Read the song back with `get_song` and confirm `artwork`, `artworkMedium` and `artworkThumb` are set. Songs stay drafts.
 11. A song that only exists on a compilation: use the original album date when a source confirms it.
 12. Remakes and covers: `add_song_versions`, with `version_of` as objects. Set the original's link type to Remake.
 13. Lyrics are optional. Add them only when the user asks. Follow "Lyrics" in `diskograf-song-credits`. `create_song` and `update_song` clean the text and reject more than 5,000 characters. Never write lyrics from memory.
 
 ### Artwork
 
+- Artwork is not optional. A song or album without artwork stays unpublished. Fix the artwork before you publish the batch, or list it as a gap.
 - Artwork priority is always Spotify or Apple Music first, then YouTube. Use the YouTube thumbnail only as a fallback when no store cover exists.
+- Check the cover before you use it. `curl -sIL` gives the final URL, the HTTP status and the content type. Reject a JSON body, an HTML page, or a tiny placeholder image.
 - `set_artwork` fails with "HTTP 403" or "redirected". Pass the final HTTPS image URL. Resolve redirects with `curl -sIL`.
+- A song takes its cover from `data.artwork`, `data.artworkMedium` and `data.artworkThumb` on `create_song` or `update_song`. Keep the values that `prepare_song` or `create_song` fills in. Never drop them.
+- `set_artwork` sets the cover for an album, curated list or label. It cannot set a song cover.
+- Read the `set_artwork` dry run for `content_type` and byte size. Then confirm. Read the item back and confirm its artwork fields are set.
 - Wikimedia and Discogs block hotlinking. Try Spotify, Apple, then a blog or Encyclopaedia Metallum scan. Say in the log when a cover is small or watermarked.
 - `i.discogs.com` returns HTTP 403 to the `set_artwork` Worker, because Cloudflare blocks a request with no browser fingerprint. Do not fall back to a video thumbnail yet. Wrap the Discogs image in the wsrv.nl image proxy and pass that URL instead. It works as of 2026-11-10.
   - Get the image URL from `https://api.discogs.com/releases/<id>` or `https://api.discogs.com/masters/<id>` in `images[].uri`.
@@ -114,19 +138,21 @@ For each missing song:
 1. `search_albums` first. Duplicates are the most common error.
 2. Every member song must exist and be published.
 3. `create_album_with_songs` needs `title`, `album_type`, `released_at` and `song_ids`, in store order. An album holds at most 50 songs.
-4. `set_album_artists`, `set_album_labels`, `suggest_album_links` then `update_album`, and `set_artwork` with the cover. Make sure the album has artwork before you publish it. Use the release cover first. If none exists, copy the artwork from one of its member songs.
+4. `set_album_artists`, `set_album_labels`, `suggest_album_links` then `update_album`, and `set_artwork` with the cover. The album must have artwork before you publish it. Use the release cover first. If none exists, copy the artwork from one of its member songs. Then read it back with `get_album` and confirm the artwork fields are set.
 5. For an existing album, `compare_album_tracklist` then `set_album_songs` with the full verified order. Add missing tracks first.
 6. Skip live albums, compilations, remix albums and karaoke albums unless the user asks. Note each skip in the log.
 7. A duet or joint album goes under the lead artist whose catalogue it fits. Do not create it twice.
 8. A track with no video or no store release: add the album without it and list the gap.
+9. A track that cannot be confidently identified: skip the whole album. Never add a guessed track or a guessed order. List the album and its gap in the log.
 
 ## 6. Publish
 
-Get the user's approval first, or use the standing approval of an unsupervised order. Then:
+A full completion order is the standing approval. Publish every confident item without asking again. Then:
 
-1. `publish_songs` for the new songs.
-2. `set_album_status` for the new albums. Check each album has artwork first. If it has none, set one from a member song before publishing.
-3. Check the `cache` result in each response. A `mirror_edge` failure is known and harmless when the other caches clear. A later write clears all three.
+1. Check artwork first. Read each new song with `get_song` and each new album with `get_album`. Every item needs artwork before it is published. Set the cover on any item that has none: `update_song` for a song, `set_artwork` for an album. If the cover cannot be found, hold that item back and list it as a gap.
+2. `publish_songs` for the new songs that have artwork.
+3. `set_album_status` for the new albums that have artwork. If an album has none, take the cover from one of its member songs first.
+4. Check the `cache` result in each response. A `mirror_edge` failure is known and harmless when the other caches clear. A later write clears all three.
 
 ## 7. Profile and log
 
@@ -145,13 +171,13 @@ Do this in the same run, before you report. Never report before the Notion page 
    - URL: `https://app.notion.com/p/411713c9e1f28123873edd8fd8e1b924`.
    - Existing sections as of 2026-11-07: "2026-11-07, run 3 (Naim Daniel, Salammusik, Mas Idayu, Elyana, Ical Mosh)" above "2026-11-07, run 2 (Noh Salleh, Uji Rashid, Hael Husaini, Megat Fazly, Guccimith)" above "2026-11-07". A date alone is run 1 of that date.
 2. Add a new dated section at the top of the page. Use the same shape as the existing sections:
-   - a date heading, with the run label and the artist names when the run has several artists;
-   - one table per section, with the same columns as the existing tables;
-   - notes under the table, with catalogue ids.
+   - a date heading, with the run label and the artist names when the run has several artists, for example `2026-11-15, run 2 (Artist A, Artist B)`. A date alone is run 1;
+   - one table per section, with the same columns as the existing tables. Put one row for each artist: artist, artist id, song ids added, album ids added;
+   - notes under the table, with catalogue ids, for every gap that remains.
 3. Keep newest first. Never reorder, edit or delete older sections.
 4. Write with `notion-update-page`. Prepend the new section. Do not rewrite the whole page body.
 5. Fetch the page again and confirm the new section landed at the top. Check the heading, the table rows and the notes.
-6. If the Notion write or the check fails, say so in the report under **Blocked on me**. Give the error text and the page id. Do not report the run as complete.
+6. If the Notion write or the check fails, say so in the report under **Blocked on me**. Give the error text and the page id. Show the unsaved section in chat and say that it is not saved. Do not report the run as complete.
 
 ## 8. Many artists at once
 
@@ -164,6 +190,7 @@ Use this only when the user asks to delegate or orchestrate.
    - the research file, with the warning that it can contain errors;
    - the read order: the `diskograf-catalogue` skill, then the Notion log page;
    - the rules in this skill: dry run first, search before create, role ids, version type Remake, no guessed link or credit, no merge, trash or delete;
+   - the confident match rule and the autonomy rule from section 0. Skip an unclear item and list it. Do not stop the run for it;
    - the scope: studio albums, EPs, singles and lead collaborations;
    - the done condition: everything published, then re-read with `get_album` and `search_songs`;
    - "do not edit code, do not deploy";
@@ -200,7 +227,10 @@ For "next N top singers" or "do N more artists":
 ## Rules
 
 - Search before you create.
+- No confident official match, no write. Skip the item and write the reason in the log.
+- Do not ask about routine choices. Ask only when the answer changes the data and no source settles it.
 - Never publish, trash, merge or delete without the user's request or a standing order that names it.
+- Every published song and album has artwork. An item without artwork stays unpublished and goes in the log as a gap.
 - A song must be unpublished before it can be trashed. Trash is restorable by a super user.
 - A merge cannot be undone. Dry run it, show it, then confirm. Add the old spelling as a text alias on the survivor. Check that credits moved.
 - The artist delete tool refuses artists younger than 48 hours. Write the earliest date in the log.
@@ -212,7 +242,7 @@ For "next N top singers" or "do N more artists":
 
 ## Report
 
-Give the songs added, albums added, dates fixed and remaining gaps, with ids. The last line must confirm the Notion log section was written and read back. Without that line the run is not complete. Show times in MYT. Put **Blocked on me** first.
+Give the songs added, albums added, dates fixed and remaining gaps, with ids. Include every item left unpublished for missing artwork. List every skipped item with the reason. The last line must confirm the Notion log section was written and read back. Without that line the run is not complete. Show times in MYT. Put **Blocked on me** first.
 
 ## Internal notes
 

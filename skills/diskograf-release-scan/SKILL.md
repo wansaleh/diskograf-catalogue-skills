@@ -73,7 +73,7 @@ Write the merged list to `/tmp/release-scan/<from>_<to>.json`, newest first. One
 ## 8. Add the songs
 
 Run the add flow for every `new` and `version of` row. Do not stop to ask between rows.
-Per song: read `internal_notes` of matched artists first (see Internal notes). Fill missing Spotify or Apple links with `suggest_streaming_links`; every song needs both. Use `prepare_song` `youtube_candidates` when the row has no YouTube id.
+Per song: read `internal_notes` of matched artists first (see Internal notes). Fill missing Spotify or Apple links with `suggest_streaming_links`, and add both when both exist. Use `prepare_song` `youtube_candidates` when the row has no YouTube id. Skip the row when no official link is confident.
 
 ### 8a. Draft the song
 
