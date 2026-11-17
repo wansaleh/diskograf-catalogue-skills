@@ -15,6 +15,7 @@ They are for catalogue admins, not developers. They need no code checkout.
 | `diskograf-song-credits` | Fill or fix song credits and lyrics. |
 | `diskograf-better-video` | Swap a song's video for the official music video. |
 | `diskograf-artist-avatars` | Add or replace artist photos. |
+| `diskograf-publish-review` | Review pending songs, flag fixes, then publish. |
 
 ## Setup
 
