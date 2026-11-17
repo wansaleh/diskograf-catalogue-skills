@@ -123,6 +123,10 @@ Pick the first tool that fits the task.
 - `artists`, `genres`, and `labels` on `update_song` replace the whole relation.
 - Agent-created songs stay drafts. Publish only after review.
 - Every confirmed write logs to `api_write_log` and clears web caches.
+- **Agent attribution.** Every write tool requires `agent`: the exact lowercase model id you run as.
+  - Examples: `claude-opus-5-5`, `claude-sonnet-5-5`, `gpt-6.1-sol`, `deepseek-flash`.
+  - Send the model id, not a task label. Use the same value in the dry run and the confirm call.
+  - The activity log stores it next to the human token owner. Only admins see it.
 - **Internal notes.** Songs, albums, artists, and labels have an admin-only private note log. Read it in the `internal_notes` field of `get_*`.
   - Before you edit an item, read `internal_notes` and skip work already done.
   - Continue open work from the notes. Fix data that a note shows is wrong.
