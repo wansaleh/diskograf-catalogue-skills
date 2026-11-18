@@ -111,6 +111,8 @@ Pick the first tool that fits the task.
 
 ### Rules for every write
 
+Load each `diskograf` tool schema with ToolSearch before its first call. Parameter names differ between tools, for example `search_artists` and `get_songs`.
+
 1. Call the write tool without `confirm`. This is a dry run.
 2. Read the before and after payload.
 3. Call again with the same arguments and `confirm: true`.
@@ -362,7 +364,7 @@ Pick the first tool that fits the task.
 - Before a bulk tracklist or link change, save the before-state under `/tmp`.
 - Apply only tracklists you checked against the provider page or MusicBrainz: track count, order and titles. Leave unverified or conflicting editions alone.
 - Read back each write. Keep album membership and release metadata unchanged unless that is the task.
-- If a write receipt shows `mirror_edge: 'failed'` while `api_edge_cache` and `web_pages` are ok, purge the Cloudflare cache for `diskograf.com` once. Never repeat a write to retry the cache.
+- A write receipt can show `mirror_edge: 'failed'` while `api_edge_cache` and `web_pages` are ok. The cause is the Free plan purge limit: 5 hostname purges per minute, shared by the account. Batch writes hit it. The apex HTML refreshes within 300 seconds anyway, so take no action. Never repeat a write to retry the cache.
 
 ### Curated lists
 
