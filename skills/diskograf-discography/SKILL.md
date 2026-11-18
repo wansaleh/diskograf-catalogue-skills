@@ -91,7 +91,7 @@ Make one table with:
 - missing albums;
 - songs with wrong release dates;
 - albums with a wrong order or missing tracks;
-- songs with the wrong recording (see section 4, step 7).
+- songs with the wrong recording (see section 4, step 8).
 
 Match by title and duration, not by title only. Check `similar_songs` and versions: live, remix, acoustic and remake are separate songs. Do not wait for approval on confident rows. Put the table in the report, with each skipped row and its reason.
 
@@ -107,13 +107,14 @@ For each missing song:
 4. Credits: lead performer role 15, composer 2, lyricist 3, producer 1, arranger 17. Use `list_roles`. The description first, then Spotify credits through Yab, as in `diskograf-song-credits`. Add composer and lyricist to every new song when a source confirms them.
 5. A name that matches two artists returns `ambiguous_artist`. Pass `artist_id`. Two people with the same name are not the same person. Check before you reuse an id.
 6. Before you create a new artist for a credit, `search_artists` for spelling variants. A past run created a duplicate "Mohamad Nasir". It could not be deleted for 48 hours.
-7. Check the recording. A fan or compilation upload can be a different version. Compare the duration with Apple Music and the ℗ year in the description. If it differs, swap the video.
-8. Artwork is required on every song. Set it from the release cover: Spotify (`i.scdn.co`) or Apple (`mzstatic.com`). Use the YouTube thumbnail only when no store cover exists. See "Artwork" below.
-9. `labels` takes objects: `{ "label_id": 1 }` or `{ "name": "X" }`, exactly one key each. Never bare ids or strings.
-10. `create_song` dry run, check `similar_songs`, then confirm. Read the song back with `get_song` and confirm `artwork`, `artworkMedium` and `artworkThumb` are set. Songs stay drafts.
-11. A song that only exists on a compilation: use the original album date when a source confirms it.
-12. Remakes and covers: `add_song_versions`, with `version_of` as objects. Set the original's link type to Remake.
-13. Lyrics are optional. Add them only when the user asks. Follow "Lyrics" in `diskograf-song-credits`. `create_song` and `update_song` clean the text and reject more than 5,000 characters. Never write lyrics from memory.
+7. A same-name artist split needs user approval first. This means a new same-name artist, or songs moved from one artist to another. Write the evidence in the report and wait. A past run split Firdaus 3676 without approval, and the user reverted it.
+8. Check the recording. A fan or compilation upload can be a different version. Compare the duration with Apple Music and the ℗ year in the description. If it differs, swap the video.
+9. Artwork is required on every song. Set it from the release cover: Spotify (`i.scdn.co`) or Apple (`mzstatic.com`). Use the YouTube thumbnail only when no store cover exists. See "Artwork" below.
+10. `labels` takes objects: `{ "label_id": 1 }` or `{ "name": "X" }`, exactly one key each. Never bare ids or strings.
+11. `create_song` dry run, check `similar_songs`, then confirm. Read the song back with `get_song` and confirm `artwork`, `artworkMedium` and `artworkThumb` are set. Songs stay drafts.
+12. A song that only exists on a compilation: use the original album date when a source confirms it.
+13. Remakes and covers: `add_song_versions`, with `version_of` as objects. Set the original's link type to Remake.
+14. Lyrics are optional. Add them only when the user asks. Follow "Lyrics" in `diskograf-song-credits`. `create_song` and `update_song` clean the text and reject more than 5,000 characters. Never write lyrics from memory.
 
 ### Artwork
 
