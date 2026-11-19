@@ -19,6 +19,7 @@ Do not publish until the user approves the list.
 ## 2. Check every song
 
 1. **Authenticity**
+   - No digital copy, no write. A store release or an official upload is required. A physical copy, a scan or a tracklist alone is not enough. Reject the record.
    - The YouTube channel belongs to the artist or label, or is a Topic channel.
    - The Spotify and Apple Music track artist is the same act. Same-name artists can merge on the stores.
    - The release date matches the store release, or the upload date when no store release exists.

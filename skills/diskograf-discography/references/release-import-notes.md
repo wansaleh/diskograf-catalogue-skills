@@ -7,6 +7,7 @@ Field notes from earlier album and EP imports. Read them with section 4 of `SKIL
 - Run `search_albums` for every planned release first. Many already exist.
 - Read one recent album with `get_album` and one song with `get_song`. Copy their genres, labels and `data` fields.
 - Build the release list from Apple, Spotify, Wikipedia, Discogs and 45cat for 1970s EPs. Leave out compilations and reissues. Work oldest first.
+- A release needs a digital copy before it is written. A Wikipedia, Discogs or 45cat entry alone is not enough. Skip it and report the skip.
 
 ## Tracklists and links
 

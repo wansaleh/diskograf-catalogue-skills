@@ -8,7 +8,7 @@ description: Core Diskograf catalogue guide - entities, credit roles, access lev
 Read this before any catalogue task on diskograf.com.
 It covers what the site is, how to browse it, and how to edit the catalogue.
 
-Last verified: 2026-11-15.
+Last verified: 2026-11-19.
 
 ## Keep this file current
 
@@ -405,6 +405,7 @@ For a full profile fill, use the `diskograf-artist-profile` skill.
 - Links to catalogue pages use `<id>-<slug>`, for example `https://diskograf.com/song/12345-tajuk-lagu`. Genres use the slug only. Users use `/@<username>`. Never build a link from the name alone. Take the id and slug from the tool output, or follow `docs/permalinks.md` in diskograf-next.
 
 - Search before you create. Duplicates are the most common error.
+- No digital copy, no write. A store release or an official upload is required. A physical copy, a scan or a tracklist alone is not enough. Skip the item and report it.
 - Never publish, trash, merge, or delete without the user's request.
 - Never use a published song in `bulk_trash_songs`. Unpublish it first.
 - Size bulk work with `catalogue_stats` or a dry run first.

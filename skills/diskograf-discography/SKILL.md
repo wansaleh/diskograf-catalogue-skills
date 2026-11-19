@@ -60,7 +60,7 @@ Collect the release list in this order:
 2. **Apple Music artist page**: albums and singles with dates.
 3. **YouTube**: `youtube_artist_songs` lists the channel songs. It costs no quota. Old songs often exist only as fan uploads. Use a fan upload to find the song, then confirm the recording with a store link or another official source.
 4. **Wikipedia, Wikidata, MusicBrainz and Discogs**: older albums, dates and tracklists. `compare_album_tracklist` checks these sources for one album.
-5. Pre-2000 albums with no store release: use a collector scan, a newspaper advertisement or a label compilation tracklist (for example EMI Getaran Nostalgia). Write the source in the log.
+5. Pre-2000 albums with no store release: a collector scan, newspaper advertisement or label compilation tracklist can confirm the release exists, but an album with no digital copy is skipped. Write the source in the log.
 
 Verify every claim before you write it. A research report from another model can contain errors.
 
@@ -146,6 +146,7 @@ For each missing song:
 7. A duet or joint album goes under the lead artist whose catalogue it fits. Do not create it twice.
 8. A track with no video or no store release: add the album without it and list the gap.
 9. A track that cannot be confidently identified: skip the whole album. Never add a guessed track or a guessed order. List the album and its gap in the log.
+10. A release that exists only on physical media is skipped. Add it only when its audio is found digitally, such as a store release or an official upload.
 
 ## 6. Publish
 
@@ -229,6 +230,7 @@ For "next N top singers" or "do N more artists":
 ## Rules
 
 - Search before you create.
+- No digital copy, no write. A store release or an official upload is required. A physical copy, a scan or a tracklist alone is not enough. Skip the item and report it.
 - No confident official match, no write. Skip the item and write the reason in the log.
 - Do not ask about routine choices. Ask only when the answer changes the data and no source settles it.
 - Never publish, trash, merge or delete without the user's request or a standing order that names it.
