@@ -1,6 +1,6 @@
 ---
 name: diskograf-discography
-description: Complete one artist's discography in the Diskograf catalogue - find missing songs and albums on Spotify, Apple Music and YouTube, add them with credits, fix release dates and album tracklists, audit dates and dead videos, and log the result on the Notion "Diskograf discography completions" page. Use when asked to complete, fill, audit or finish an artist's discography, songs or albums, or to run many artists in parallel.
+description: Complete one artist's discography in the Diskograf catalogue - find missing songs and albums on Spotify, Apple Music and YouTube, add them with credits, fill the artist profile (info, links, biography), fix release dates and album tracklists, audit dates and dead videos, and log the result on the Notion "Diskograf discography completions" page. Use when asked to complete, fill, audit or finish an artist's discography, songs or albums, or to run many artists in parallel.
 ---
 
 > **First:** read the internal notes of every item before you edit it. See "Internal notes" below.
@@ -16,10 +16,11 @@ Related skills:
 - `diskograf-song-credits`: Spotify credits through Yab.
 - `diskograf-better-video`: official video swaps.
 - `diskograf-artist-avatars`: artist images.
+- `diskograf-artist-profile`: artist info, links and biography (section 7).
 
 ## 0. Pick the mode
 
-- **Full completion**: sections 1 to 7. Use for "complete X's discography". Section 7 writes the log on the Notion page. The Notion page is the only log.
+- **Full completion**: sections 1 to 7. Section 7 also fills the artist profile: info, links, biography and avatar. Use for "complete X's discography". Section 7 writes the log on the Notion page. The Notion page is the only log.
 - **Many artists at once**: read section 8 first.
 - **Date audit**: section 9. Use when dates look implausible.
 - **Dead video audit**: section 10.
@@ -157,7 +158,7 @@ A full completion order is the standing approval. Publish every confident item w
 
 ## 7. Profile and log
 
-1. `update_artist`: both Spotify and Apple Music artist links, and socials only when verified. A social account that may belong to another person goes to the user as a question. Never save it. Never set gender.
+1. Fill the artist profile with the `diskograf-artist-profile` skill: info fields, dates and places, social links, biography and avatar. List each unfilled field as a gap in the log.
 2. Add the artist to the Notion log page under today's date, newest first. See "Notion log" below.
    - a table row with the artist, artist id, song ids added and album ids added;
    - a note with the remaining gaps: songs with no store release, missing videos, missing covers, skipped albums, possible duplicates, and dates left unchanged.

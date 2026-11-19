@@ -314,6 +314,9 @@ Load each `diskograf` tool schema with ToolSearch before its first call. Paramet
 
 ### Find artist information
 
+For a full profile fill, use the `diskograf-artist-profile` skill.
+
+
 1. Find gaps with `artist_missing_info`. Default fields: country, birth date, birth place, biodata, Instagram, Facebook, YouTube.
 2. Call `suggest_artist_info` or `suggest_artist_info_batch` (max 10).
    - Sources: Wikidata, MusicBrainz, YouTube channel About page.
